@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>MatiX - محاسبه یونیت کابینت</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; padding: 20px; direction: rtl; }
+        input { width: 60px; margin: 5px; }
+        label { display: block; margin-top: 10px; }
+        button { margin-top: 10px; padding: 5px 10px; }
+        pre { background: #f0f0f0; padding: 10px; }
+        #google_translate_element { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>محاسبه یونیت کابینت MatiX</h1>
+
+    <!-- منوی ترجمه گوگل -->
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'fa'}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- فرم ورودی یونیت -->
+    <form id="unitForm">
+        <label>عرض یونیت (سانتی‌متر): <input type="number" id="width" required></label>
+        <label>ارتفاع یونیت (سانتی‌متر): <input type="number" id="height" required></label>
+        <label>عمق یونیت (سانتی‌متر): <input type="number" id="depth" required></label>
+        <button type="button" onclick="calculate()">محاسبه</button>
+    </form>
+
+    <!-- نمایش نتیجه -->
+    <pre id="result"></pre>
+
+    <script>
+    function calculate() {
+        const W = parseInt(document.getElementById('width').value);
+        const H = parseInt(document.getElementById('height').value);
+        const D = parseInt(document.getElementById('depth').value);
+        const T = 16; // ضخامت پیش‌فرض
+
+        if(W<30 || H<60 || D<40){
+            alert("ورودی‌ها کمتر از حداقل استاندارد هستند!");
+            return;
+        }
+
+        // قطعات بدنه
+        const sidePanels = [{عرض: D, ارتفاع: H}, {عرض: D, ارتفاع: H}];
+        const topPanel = {عرض: W-2*T, عمق: D};
+        const bottomPanel = {عرض: W-2*T, عمق: D};
+        const backPanel = {عرض: W-2*T, ارتفاع: H-T};
+
+        // درب‌ها
+        const doors = [
+            {عرض: Math.floor(W/2)-2, ارتفاع: H-2},
+            {عرض: Math.floor(W/2)-2, ارتفاع: H-2}
+        ];
+
+        // فیتینگ‌ها
+        const fittings = {
+            لولا: doors.length * 2,
+            "پایه قابل تنظیم": 4,
+            "پیچ M4": 12,
+            "نوار لبه (متر)": ((2*H + 2*(W-2*T) + 2*D)/100).toFixed(2)
+        };
+
+        // خروجی فارسی
+        let output = "قطعات بدنه:\n";
+        output += `- بغل: ${sidePanels.length} عدد، ${H} × ${D} سانتی‌متر\n`;
+        output += `- کف: 1 عدد، ${topPanel.عرض} × ${D} سانتی‌متر\n`;
+        output += `- سقف: 1 عدد، ${bottomPanel.عرض} × ${D} سانتی‌متر\n`;
+        output += `- پشت: 1 عدد، ${backPanel.عرض} × ${backPanel.ارتفاع} سانتی‌متر\n\n`;
+
+        output += "درب‌ها:\n";
+        doors.forEach((door,i)=>{output += `- درب ${i+1}: ${door.عرض} × ${door.ارتفاع} سانتی‌متر\n`});
+        output += "\nفیتینگ و متعلقات:\n";
+        for(let key in fittings){
+            output += `- ${key}: ${fittings[key]}\n`;
+        }
+
+        document.getElementById('result').textContent = output;
+    }
+    </script>
+</body>
+</html>
