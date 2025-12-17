@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>MatiX - Cabinet Unit Calculator</title>
+</head>
+<body>
+    <h1>محاسبه یونیت کابینت</h1>
+
+    <!-- منوی ترجمه گوگل -->
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'fa'}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- فرم نمونه یونیت -->
+    <form id="unitForm">
+        <label>عرض (cm): <input type="number" id="width" required></label><br>
+        <label>ارتفاع (cm): <input type="number" id="height" required></label><br>
+        <label>عمق (cm): <input type="number" id="depth" required></label><br>
+        <button type="button" onclick="calculate()">محاسبه</button>
+    </form>
+
+    <!-- نمایش نتیجه -->
+    <pre id="result"></pre>
+
+    <script>
+    function calculate() {
+        const width = document.getElementById('width').value;
+        const height = document.getElementById('height').value;
+        const depth = document.getElementById('depth').value;
+
+        const panels = {
+            "side_panels": [
+                {"width": depth, "height": height},
+                {"width": depth, "height": height}
+            ],
+            "top_panel": {"width": width, "depth": depth},
+            "bottom_panel": {"width": width, "depth": depth},
+            "back_panel": {"width": width, "height": height}
+        };
+
+        document.getElementById('result').textContent = JSON.stringify(panels, null, 2);
+    }
+    </script>
+</body>
+</html>
